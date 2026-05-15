@@ -5,7 +5,7 @@
   "currentIteration": 0,
   "existingSystem": {
     "basePath": "/Users/cami/Developer/Personal/rideglory-api",
-    "notes": "Brownfield NestJS microservices API. Gateway + tracking service + event management + user management microservices. Firebase Auth validation. WebSocket tracking endpoint. Serves the Rideglory Flutter app."
+    "notes": "Brownfield NestJS microservices API. Gateway + notifications-ms + events-ms + users-ms + maintenances-ms + vehicles-ms. Firebase Auth. WebSocket tracking in gateway. Serves the Rideglory Flutter app."
   },
   "iterations": [
     {
@@ -19,7 +19,7 @@
     "po": { "status": "idle", "lastAction": null, "focus": null },
     "architect": { "status": "idle", "lastAction": null, "focus": null },
     "design": { "status": "idle", "lastAction": null, "focus": null },
-    "backend": { "status": "idle", "lastAction": null, "focus": null },
+    "backend": { "status": "done", "lastAction": "2026-05-15", "focus": "notifications-ms implementation + tracking analysis" },
     "frontend": { "status": "idle", "lastAction": null, "focus": null },
     "qa": { "status": "idle", "lastAction": null, "focus": null },
     "tech_lead": { "status": "idle", "lastAction": null, "focus": null },
@@ -33,6 +33,30 @@
       "status": "done",
       "iteration": 0,
       "updatedAt": "2026-05-11T00:00:00Z"
+    },
+    {
+      "id": "T-AD-1",
+      "title": "Implement notifications-ms NestJS TCP microservice (FCM + notification center)",
+      "agent": "backend",
+      "status": "done",
+      "iteration": "ad-hoc",
+      "updatedAt": "2026-05-15T00:00:00Z"
+    },
+    {
+      "id": "T-AD-2",
+      "title": "Refactor api-gateway NotificationsService to RPC proxy → notifications-ms",
+      "agent": "backend",
+      "status": "done",
+      "iteration": "ad-hoc",
+      "updatedAt": "2026-05-15T00:00:00Z"
+    },
+    {
+      "id": "T-AD-3",
+      "title": "Tracking microservice analysis — recommendation delivered in backend.md handoff",
+      "agent": "backend",
+      "status": "done",
+      "iteration": "ad-hoc",
+      "updatedAt": "2026-05-15T00:00:00Z"
     }
   ],
   "events": [
@@ -41,6 +65,12 @@
       "type": "framework_baseline",
       "agent": "system",
       "detail": "Clean workflow state for rideglory-api (NestJS brownfield). Microservices: gateway, tracking, events, users. No product plan until /solo-plan."
+    },
+    {
+      "at": "2026-05-15T00:00:00Z",
+      "type": "backend_done",
+      "agent": "backend",
+      "detail": "notifications-ms fully implemented (TCP microservice, Prisma, FCM). api-gateway NotificationsService refactored to RPC proxy. Tracking analysis: keep in api-gateway (see backend.md)."
     }
   ]
 }
