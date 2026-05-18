@@ -1,7 +1,8 @@
 #!/bin/bash
 # user_data.sh.tpl
-# Se ejecuta como root al primer arranque de la instancia.
-# Los logs se guardan en /var/log/user-data.log
+# Se ejecuta como root al PRIMER arranque de la instancia EC2.
+# Terraform inyecta: ${github_user}, ${github_token}, ${postgres_password}, ${project_name}.
+# Logs disponibles en: sudo cat /var/log/user-data.log
 
 set -euo pipefail
 exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
@@ -12,82 +13,117 @@ echo "Fecha: $(date)"
 # ─── Actualizar paquetes del sistema ──────────────────────────────────────────
 dnf update -y
 
-# ─── Instalar Docker ──────────────────────────────────────────────────────────
-# Amazon Linux 2023 usa dnf como gestor de paquetes.
-# Docker está disponible en los repositorios oficiales de Amazon.
+# ─── Instalar Docker y Git ────────────────────────────────────────────────────
+# Amazon Linux 2023 usa dnf. Docker está disponible en sus repos oficiales.
 dnf install -y docker git
 
-# Iniciar y habilitar Docker para que arranque con el sistema
+# Iniciar Docker y habilitarlo para que arranque automáticamente con el sistema
 systemctl start docker
 systemctl enable docker
 
-# Agregar el usuario 'ec2-user' al grupo docker para no usar sudo
+# Agregar ec2-user al grupo docker para no necesitar sudo
 usermod -aG docker ec2-user
 
 # ─── Instalar Docker Compose v2 ───────────────────────────────────────────────
-# Descargamos el binario directamente de GitHub releases.
 COMPOSE_VERSION="v2.27.0"
 mkdir -p /usr/local/lib/docker/cli-plugins
 curl -SL "https://github.com/docker/compose/releases/download/$${COMPOSE_VERSION}/docker-compose-linux-x86_64" \
   -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
-echo "Docker Compose instalado: $(docker compose version)"
+echo "Docker: $(docker --version)"
+echo "Docker Compose: $(docker compose version)"
 
 # ─── Crear directorio de la aplicación ───────────────────────────────────────
-APP_DIR="/opt/rideglory"
-mkdir -p $APP_DIR
-cd $APP_DIR
+APP_DIR="/opt/${project_name}"
+mkdir -p "$APP_DIR"
+cd "$APP_DIR"
 
-# ─── Clonar repositorios ──────────────────────────────────────────────────────
-# Nota: Si los repos son privados, necesitas configurar un deploy key o
-# usar un token de acceso personal (PAT) de GitHub.
-# Para repos públicos, esto funciona directamente.
+# ─── Clonar repositorio (privado) con submodules ─────────────────────────────
+# github_token: GitHub Personal Access Token con permisos read:org + contents:read
+# --recurse-submodules clona api-gateway, vehicles-ms, events-ms, users-ms,
+# maintenances-ms, rideglory-common-lib y rideglory-contracts en un solo paso.
+git clone \
+  --recurse-submodules \
+  "https://${github_token}@github.com/Rideglory-Backend/rideglory-api.git" .
+echo "Repositorio y submodulos clonados"
 
-GITHUB_USER="${github_user}"
+# ─── Crear script de init de bases de datos ──────────────────────────────────
+mkdir -p "$APP_DIR/scripts"
+cat > "$APP_DIR/scripts/init-db.sql" << 'SQLEOF'
+CREATE DATABASE rideglory_users;
+CREATE DATABASE rideglory_vehicles;
+CREATE DATABASE rideglory_events;
+CREATE DATABASE rideglory_maintenances;
+CREATE DATABASE rideglory_notifications;
+SQLEOF
 
-git clone "https://github.com/$GITHUB_USER/rideglory-api.git" .
-
-echo "Repositorio clonado correctamente"
-
-# ─── Crear archivos .env de producción ───────────────────────────────────────
-# Aquí defines las variables de entorno de cada microservicio.
-# En un setup real, estos valores vendrían de AWS Secrets Manager o
-# se pasarían de forma segura. Para el MVP los escribimos directamente.
-
-# .env raíz (PostgreSQL compartido)
-cat > $APP_DIR/.env << 'ENVEOF'
+# ─── Crear archivos de variables de entorno ───────────────────────────────────
+# .env raíz — variables compartidas por docker-compose.yml
+cat > "$APP_DIR/.env" << ENVEOF
 POSTGRES_USER=rideglory
 POSTGRES_PASSWORD=${postgres_password}
 ENVEOF
 
-# .env para api-gateway
-cat > $APP_DIR/api-gateway/.env.production << 'ENVEOF'
+# api-gateway
+cat > "$APP_DIR/api-gateway/.env.production" << ENVEOF
 PORT=3000
 USERS_MS_PORT=3001
 VEHICLES_MS_PORT=3002
 EVENTS_MS_PORT=3003
 MAINTENANCES_MS_PORT=3004
 NOTIFICATIONS_MS_PORT=3005
-# Agrega aquí tus claves de Firebase, Mapbox, etc.
+FIREBASE_PROJECT_ID=
+FIREBASE_SERVICE_ACCOUNT_JSON=
+GOOGLE_PLACES_API_KEY=
+MAPBOX_ACCESS_TOKEN=
 ENVEOF
 
-# .env para users-ms (DATABASE_URL lo inyecta docker-compose desde .env raíz)
-cat > $APP_DIR/users-ms/.env.production << 'ENVEOF'
-# Variables adicionales específicas de users-ms
+# users-ms
+cat > "$APP_DIR/users-ms/.env.production" << ENVEOF
+PORT=3001
 ENVEOF
 
-# Repite para vehicles-ms, events-ms, maintenances-ms, notifications-ms
-# ...
+# vehicles-ms
+cat > "$APP_DIR/vehicles-ms/.env.production" << ENVEOF
+PORT=3002
+ENVEOF
+
+# events-ms
+cat > "$APP_DIR/events-ms/.env.production" << ENVEOF
+PORT=3003
+ENVEOF
+
+# maintenances-ms
+cat > "$APP_DIR/maintenances-ms/.env.production" << ENVEOF
+PORT=3004
+ENVEOF
+
+# notifications-ms
+cat > "$APP_DIR/notifications-ms/.env.production" << ENVEOF
+PORT=3005
+FIREBASE_SERVICE_ACCOUNT_JSON=
+FIREBASE_PROJECT_ID=
+ENVEOF
+
+echo "Archivos .env creados"
 
 # ─── Levantar los servicios ───────────────────────────────────────────────────
-cd $APP_DIR
+cd "$APP_DIR"
 
-# Construir imágenes y levantar en background
+# Construir todas las imágenes y levantar en background
 docker compose up --build -d
 
-echo "=== Servicios levantados ==="
+echo "Esperando a que los servicios estén healthy (máx 5 min)..."
+WAIT=0
+until [ "$(docker compose ps --format json | grep -c '"Health":"healthy"')" -ge 7 ] || [ "$WAIT" -ge 300 ]; do
+  sleep 10
+  WAIT=$((WAIT + 10))
+done
+
+echo "=== Estado de los servicios ==="
 docker compose ps
 
 echo "=== Script completado exitosamente ==="
-echo "API disponible en: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):3000"
+PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "API disponible en: http://$PUBLIC_IP:3000/api"

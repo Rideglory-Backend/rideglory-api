@@ -1,0 +1,27 @@
+[submodule "api-gateway"]
+	path = api-gateway
+	url = git@github.com:Rideglory-Backend/api-gateway.git
+
+[submodule "vehicles-ms"]
+	path = vehicles-ms
+	url = git@github.com:Rideglory-Backend/vehicles-ms.git
+
+[submodule "events-ms"]
+	path = events-ms
+	url = git@github.com:Rideglory-Backend/events-ms.git
+
+[submodule "users-ms"]
+	path = users-ms
+	url = git@github.com:Rideglory-Backend/users-ms.git
+
+[submodule "maintenances-ms"]
+	path = maintenances-ms
+	url = git@github.com:Rideglory-Backend/maintenances-ms.git
+
+[submodule "rideglory-common-lib"]
+	path = rideglory-common-lib
+	url = git@github.com:Rideglory-Backend/common-lib.git
+
+[submodule "rideglory-contracts"]
+	path = rideglory-contracts
+	url = git@github.com:Rideglory-Backend/contracts.git
