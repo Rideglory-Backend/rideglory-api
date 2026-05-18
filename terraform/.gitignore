@@ -1,0 +1,31 @@
+# Provider binaries and plugin cache
+.terraform/
+
+# Terraform state (may contain secrets — use remote state instead)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Plan files (may contain sensitive values in plaintext)
+*.tfplan
+*.plan
+
+# Variable files with secrets
+*.tfvars
+*.tfvars.json
+!example.tfvars
+!example.tfvars.json
+
+# Override files (local dev overrides, not for shared use)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config
+.terraformrc
+terraform.rc
+
+# Crash log
+crash.log
+crash.*.log
