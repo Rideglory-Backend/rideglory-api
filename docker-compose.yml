@@ -1,0 +1,230 @@
+# ─── Red interna compartida ────────────────────────────────────────────────────
+networks:
+  rideglory-net:
+    driver: bridge
+
+# ─── Volúmenes persistentes ────────────────────────────────────────────────────
+volumes:
+  postgres-data:
+
+# ─── Servicios ─────────────────────────────────────────────────────────────────
+services:
+
+  # ── Base de datos compartida ─────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: rideglory-postgres
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    command: >
+      postgres
+        -c shared_buffers=32MB
+        -c work_mem=4MB
+        -c max_connections=50
+        -c log_min_duration_statement=1000
+    mem_limit: 200m
+    memswap_limit: 200m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── API Gateway ──────────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: rideglory-api-gateway
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./api-gateway/.env.production
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=100
+      - USERS_MS_HOST=users-ms
+      - VEHICLES_MS_HOST=vehicles-ms
+      - EVENTS_MS_HOST=events-ms
+      - MAINTENANCES_MS_HOST=maintenances-ms
+      - NOTIFICATIONS_MS_HOST=notifications-ms
+    depends_on:
+      users-ms:
+        condition: service_healthy
+      vehicles-ms:
+        condition: service_healthy
+      events-ms:
+        condition: service_healthy
+      maintenances-ms:
+        condition: service_healthy
+      notifications-ms:
+        condition: service_healthy
+    mem_limit: 128m
+    memswap_limit: 128m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  # ── Users Microservice ───────────────────────────────────────────────────────
+  users-ms:
+    build:
+      context: ./users-ms
+      dockerfile: Dockerfile
+    container_name: rideglory-users-ms
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    env_file:
+      - ./users-ms/.env.production
+    environment:
+      - PORT=3001
+      - NODE_OPTIONS=--max-old-space-size=70
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/rideglory_users
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 80m
+    memswap_limit: 80m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  # ── Vehicles Microservice ────────────────────────────────────────────────────
+  vehicles-ms:
+    build:
+      context: ./vehicles-ms
+      dockerfile: Dockerfile
+    container_name: rideglory-vehicles-ms
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    env_file:
+      - ./vehicles-ms/.env.production
+    environment:
+      - PORT=3002
+      - NODE_OPTIONS=--max-old-space-size=70
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/rideglory_vehicles
+      - USERS_MS_HOST=users-ms
+      - USERS_MS_PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users-ms:
+        condition: service_healthy
+    mem_limit: 80m
+    memswap_limit: 80m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  # ── Events Microservice ──────────────────────────────────────────────────────
+  events-ms:
+    build:
+      context: ./events-ms
+      dockerfile: Dockerfile
+    container_name: rideglory-events-ms
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    env_file:
+      - ./events-ms/.env.production
+    environment:
+      - PORT=3003
+      - NODE_OPTIONS=--max-old-space-size=70
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/rideglory_events
+      - USERS_MS_HOST=users-ms
+      - USERS_MS_PORT=3001
+      - VEHICLES_MS_HOST=vehicles-ms
+      - VEHICLES_MS_PORT=3002
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users-ms:
+        condition: service_healthy
+      vehicles-ms:
+        condition: service_healthy
+    mem_limit: 80m
+    memswap_limit: 80m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  # ── Maintenances Microservice ────────────────────────────────────────────────
+  maintenances-ms:
+    build:
+      context: ./maintenances-ms
+      dockerfile: Dockerfile
+    container_name: rideglory-maintenances-ms
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    env_file:
+      - ./maintenances-ms/.env.production
+    environment:
+      - PORT=3004
+      - NODE_OPTIONS=--max-old-space-size=65
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/rideglory_maintenances
+      - USERS_MS_HOST=users-ms
+      - USERS_MS_PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users-ms:
+        condition: service_healthy
+    mem_limit: 80m
+    memswap_limit: 80m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  # ── Notifications Microservice ───────────────────────────────────────────────
+  notifications-ms:
+    build:
+      context: ./notifications-ms
+      dockerfile: Dockerfile
+    container_name: rideglory-notifications-ms
+    restart: unless-stopped
+    networks:
+      - rideglory-net
+    env_file:
+      - ./notifications-ms/.env.production
+    environment:
+      - PORT=3005
+      - NODE_OPTIONS=--max-old-space-size=65
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/rideglory_notifications
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 80m
+    memswap_limit: 80m
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3

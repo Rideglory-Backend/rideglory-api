@@ -36,6 +36,13 @@
       "command": "npm run start -- --debug 9234 --watch",
       "cwd": "${workspaceFolder}/maintenances-ms"
     },
+    {
+      "name": "Debug Notifications MS",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run start -- --debug 9235 --watch",
+      "cwd": "${workspaceFolder}/notifications-ms"
+    }
   ],
   "compounds": [
     {
@@ -45,7 +52,8 @@
         "Debug API Gateway",
         "Debug Events MS",
         "Debug Users MS",
-        "Debug Maintenances MS"
+        "Debug Maintenances MS",
+        "Debug Notifications MS"
       ]
     }
   ]
