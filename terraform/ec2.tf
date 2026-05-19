@@ -18,7 +18,6 @@ resource "aws_instance" "app_server" {
   # Aquí instalamos Docker, clonamos repos y levantamos los servicios.
   user_data = templatefile("${path.module}/user_data.sh.tpl", {
     github_user       = var.github_user
-    github_token      = var.github_token
     postgres_password = var.postgres_password
     project_name      = var.project_name
   })

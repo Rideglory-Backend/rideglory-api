@@ -39,13 +39,12 @@ APP_DIR="/opt/${project_name}"
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
-# ─── Clonar repositorio (privado) con submodules ─────────────────────────────
-# github_token: GitHub Personal Access Token con permisos read:org + contents:read
+# ─── Clonar repositorio con submodules ───────────────────────────────────────
 # --recurse-submodules clona api-gateway, vehicles-ms, events-ms, users-ms,
 # maintenances-ms, rideglory-common-lib y rideglory-contracts en un solo paso.
 git clone \
   --recurse-submodules \
-  "https://${github_token}@github.com/Rideglory-Backend/rideglory-api.git" .
+  "https://github.com/Rideglory-Backend/rideglory-api.git" .
 echo "Repositorio y submodulos clonados"
 
 # ─── Crear script de init de bases de datos ──────────────────────────────────
