@@ -38,6 +38,7 @@ run_remote "
   cd $APP_DIR
   git fetch origin
   git pull origin main
+  git submodule update --remote --merge
 "
 
 # ─── 3. Reconstruir y reiniciar servicios ─────────────────────────────────────
