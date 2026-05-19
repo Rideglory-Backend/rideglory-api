@@ -35,6 +35,8 @@ run_remote "echo 'Conexión OK'"
 # ─── 2. Actualizar código fuente ──────────────────────────────────────────────
 echo "→ Actualizando código..."
 run_remote "
+  sudo chown -R ec2-user:ec2-user $APP_DIR
+  git config --global --add safe.directory $APP_DIR
   cd $APP_DIR
   git fetch origin
   git pull origin main
