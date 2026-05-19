@@ -1,0 +1,22 @@
+**/node_modules
+
+# Exclude compiled output from microservices (rebuilt inside Docker)
+api-gateway/dist
+users-ms/dist
+vehicles-ms/dist
+events-ms/dist
+maintenances-ms/dist
+notifications-ms/dist
+
+# Keep rideglory-contracts/dist and rideglory-common-lib/dist
+# (needed by TypeScript during build)
+
+**/.env
+**/.env.*
+!**/.env.production
+**/coverage
+**/*.log
+.git
+terraform
+docs
+scripts
