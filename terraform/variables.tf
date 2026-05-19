@@ -43,3 +43,26 @@ variable "postgres_password" {
   type        = string
   sensitive   = true
 }
+
+variable "firebase_project_id" {
+  description = "Firebase project ID (visible en la consola de Firebase)"
+  type        = string
+}
+
+variable "firebase_service_account_json" {
+  description = "Contenido JSON completo del service account de Firebase (una sola línea)"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_places_api_key" {
+  description = "API Key de Google Places"
+  type        = string
+  sensitive   = true
+}
+
+variable "mapbox_access_token" {
+  description = "Access token de Mapbox"
+  type        = string
+  sensitive   = true
+}
