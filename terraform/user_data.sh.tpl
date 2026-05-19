@@ -125,6 +125,7 @@ echo "Construyendo imágenes (secuencial para respetar límite de RAM)..."
 for SERVICE in postgres api-gateway users-ms vehicles-ms events-ms maintenances-ms notifications-ms; do
   echo "  Building $SERVICE..."
   docker compose build --no-cache "$SERVICE" || true
+  docker builder prune -f > /dev/null 2>&1 || true
 done
 
 # Levantar todos en background una vez que las imágenes están listas
