@@ -43,9 +43,3 @@ variable "postgres_password" {
   type        = string
   sensitive   = true
 }
-
-variable "github_token" {
-  description = "GitHub Personal Access Token con permisos read:org y contents:read para clonar repos privados de Rideglory-Backend"
-  type        = string
-  sensitive   = true
-}
