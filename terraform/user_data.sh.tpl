@@ -1,7 +1,7 @@
 #!/bin/bash
 # user_data.sh.tpl
 # Se ejecuta como root al PRIMER arranque de la instancia EC2.
-# Terraform inyecta: ${github_user}, ${github_token}, ${postgres_password}, ${project_name}.
+# Terraform inyecta: ${github_user}, ${postgres_password}, ${project_name}.
 # Logs disponibles en: sudo cat /var/log/user-data.log
 
 set -euo pipefail
@@ -74,7 +74,6 @@ MAINTENANCES_MS_PORT=3004
 NOTIFICATIONS_MS_PORT=3005
 FIREBASE_PROJECT_ID=${firebase_project_id}
 FIREBASE_SERVICE_ACCOUNT_JSON=${firebase_service_account_json}
-GOOGLE_PLACES_API_KEY=${google_places_api_key}
 MAPBOX_ACCESS_TOKEN=${mapbox_access_token}
 ENVEOF
 

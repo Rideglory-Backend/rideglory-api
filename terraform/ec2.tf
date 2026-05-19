@@ -22,7 +22,6 @@ resource "aws_instance" "app_server" {
     project_name                  = var.project_name
     firebase_project_id           = var.firebase_project_id
     firebase_service_account_json = var.firebase_service_account_json
-    google_places_api_key         = var.google_places_api_key
     mapbox_access_token           = var.mapbox_access_token
   })
 

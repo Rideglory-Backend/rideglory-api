@@ -24,7 +24,7 @@ variable "your_ip" {
 variable "instance_type" {
   description = "Tipo de instancia EC2"
   type        = string
-  default     = "t2.micro"   # Elegible para Free Tier
+  default     = "t3.micro"   # Elegible para Free Tier en todas las regiones
 }
 
 variable "disk_size_gb" {
@@ -55,11 +55,6 @@ variable "firebase_service_account_json" {
   sensitive   = true
 }
 
-variable "google_places_api_key" {
-  description = "API Key de Google Places"
-  type        = string
-  sensitive   = true
-}
 
 variable "mapbox_access_token" {
   description = "Access token de Mapbox"
