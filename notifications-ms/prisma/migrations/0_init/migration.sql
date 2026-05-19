@@ -1,3 +1,6 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateTable
 CREATE TABLE "Notification" (
     "id" TEXT NOT NULL,
@@ -12,3 +15,4 @@ CREATE TABLE "Notification" (
 
 -- CreateIndex
 CREATE INDEX "Notification_userId_createdAt_idx" ON "Notification"("userId", "createdAt");
+
