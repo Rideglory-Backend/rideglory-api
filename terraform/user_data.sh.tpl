@@ -72,10 +72,10 @@ VEHICLES_MS_PORT=3002
 EVENTS_MS_PORT=3003
 MAINTENANCES_MS_PORT=3004
 NOTIFICATIONS_MS_PORT=3005
-FIREBASE_PROJECT_ID=
-FIREBASE_SERVICE_ACCOUNT_JSON=
-GOOGLE_PLACES_API_KEY=
-MAPBOX_ACCESS_TOKEN=
+FIREBASE_PROJECT_ID=${firebase_project_id}
+FIREBASE_SERVICE_ACCOUNT_JSON=${firebase_service_account_json}
+GOOGLE_PLACES_API_KEY=${google_places_api_key}
+MAPBOX_ACCESS_TOKEN=${mapbox_access_token}
 ENVEOF
 
 # users-ms
@@ -101,8 +101,8 @@ ENVEOF
 # notifications-ms
 cat > "$APP_DIR/notifications-ms/.env.production" << ENVEOF
 PORT=3005
-FIREBASE_SERVICE_ACCOUNT_JSON=
-FIREBASE_PROJECT_ID=
+FIREBASE_PROJECT_ID=${firebase_project_id}
+FIREBASE_SERVICE_ACCOUNT_JSON=${firebase_service_account_json}
 ENVEOF
 
 echo "Archivos .env creados"

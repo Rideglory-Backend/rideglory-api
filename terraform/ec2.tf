@@ -17,9 +17,13 @@ resource "aws_instance" "app_server" {
   # User Data: script Bash que se ejecuta UNA SOLA VEZ al primer arranque.
   # Aquí instalamos Docker, clonamos repos y levantamos los servicios.
   user_data = templatefile("${path.module}/user_data.sh.tpl", {
-    github_user       = var.github_user
-    postgres_password = var.postgres_password
-    project_name      = var.project_name
+    github_user                   = var.github_user
+    postgres_password             = var.postgres_password
+    project_name                  = var.project_name
+    firebase_project_id           = var.firebase_project_id
+    firebase_service_account_json = var.firebase_service_account_json
+    google_places_api_key         = var.google_places_api_key
+    mapbox_access_token           = var.mapbox_access_token
   })
 
   # Espera que los health checks del estado de instancia pasen antes de
