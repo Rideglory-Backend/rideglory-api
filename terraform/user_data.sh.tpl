@@ -106,11 +106,29 @@ ENVEOF
 
 echo "Archivos .env creados"
 
+# ─── Swap (crítico en t3.micro con 1 GB de RAM) ──────────────────────────────
+# Sin swap, `docker compose build` de 6 servicios simultáneos agota la RAM y
+# el OOM killer termina procesos incluyendo sshd.
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+echo "Swap habilitado: $(swapon --show)"
+
 # ─── Levantar los servicios ───────────────────────────────────────────────────
 cd "$APP_DIR"
 
-# Construir todas las imágenes y levantar en background
-docker compose up --build -d
+# Construir las imágenes de a una para no saturar la RAM.
+# `--no-deps` evita que Docker Compose arranque dependencias antes de tiempo.
+echo "Construyendo imágenes (secuencial para respetar límite de RAM)..."
+for SERVICE in postgres api-gateway users-ms vehicles-ms events-ms maintenances-ms notifications-ms; do
+  echo "  Building $SERVICE..."
+  docker compose build --no-cache "$SERVICE" || true
+done
+
+# Levantar todos en background una vez que las imágenes están listas
+docker compose up -d
 
 echo "Esperando a que los servicios estén healthy (máx 5 min)..."
 WAIT=0
@@ -123,5 +141,8 @@ echo "=== Estado de los servicios ==="
 docker compose ps
 
 echo "=== Script completado exitosamente ==="
-PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+IMDS_TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" \
+  http://169.254.169.254/latest/meta-data/public-ipv4)
 echo "API disponible en: http://$PUBLIC_IP:3000/api"

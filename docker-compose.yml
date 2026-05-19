@@ -41,8 +41,8 @@ services:
   # ── API Gateway ──────────────────────────────────────────────────────────────
   api-gateway:
     build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: api-gateway/Dockerfile
     container_name: rideglory-api-gateway
     restart: unless-stopped
     networks:
@@ -81,8 +81,8 @@ services:
   # ── Users Microservice ───────────────────────────────────────────────────────
   users-ms:
     build:
-      context: ./users-ms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: users-ms/Dockerfile
     container_name: rideglory-users-ms
     restart: unless-stopped
     networks:
@@ -108,8 +108,8 @@ services:
   # ── Vehicles Microservice ────────────────────────────────────────────────────
   vehicles-ms:
     build:
-      context: ./vehicles-ms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: vehicles-ms/Dockerfile
     container_name: rideglory-vehicles-ms
     restart: unless-stopped
     networks:
@@ -139,8 +139,8 @@ services:
   # ── Events Microservice ──────────────────────────────────────────────────────
   events-ms:
     build:
-      context: ./events-ms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: events-ms/Dockerfile
     container_name: rideglory-events-ms
     restart: unless-stopped
     networks:
@@ -174,8 +174,8 @@ services:
   # ── Maintenances Microservice ────────────────────────────────────────────────
   maintenances-ms:
     build:
-      context: ./maintenances-ms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: maintenances-ms/Dockerfile
     container_name: rideglory-maintenances-ms
     restart: unless-stopped
     networks:
@@ -205,8 +205,8 @@ services:
   # ── Notifications Microservice ───────────────────────────────────────────────
   notifications-ms:
     build:
-      context: ./notifications-ms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: notifications-ms/Dockerfile
     container_name: rideglory-notifications-ms
     restart: unless-stopped
     networks:

@@ -14,6 +14,16 @@ resource "aws_instance" "app_server" {
     encrypted             = false  # Para MVP no es necesario
   }
 
+  # Habilita explícitamente el metadata service (IMDS) en modo opcional para
+  # que cloud-init y el user_data script puedan acceder a los metadatos de la
+  # instancia. Sin este bloque, cuentas AWS con política IMDSv2 forzada
+  # impiden que cloud-init inicialice correctamente y Docker nunca se instala.
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "optional"
+    http_put_response_hop_limit = 1
+  }
+
   # User Data: script Bash que se ejecuta UNA SOLA VEZ al primer arranque.
   # Aquí instalamos Docker, clonamos repos y levantamos los servicios.
   user_data = templatefile("${path.module}/user_data.sh.tpl", {
