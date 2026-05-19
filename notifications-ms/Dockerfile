@@ -29,6 +29,7 @@ WORKDIR /build/notifications-ms
 COPY --from=builder /build/notifications-ms/node_modules ./node_modules
 COPY --from=builder /build/notifications-ms/dist ./dist
 COPY notifications-ms/prisma ./prisma
+COPY notifications-ms/prisma.config.ts ./prisma.config.ts
 COPY notifications-ms/healthcheck.js ./healthcheck.js
 
 USER node
