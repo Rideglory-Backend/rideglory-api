@@ -20,7 +20,6 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY notifications-ms/ .
 RUN DATABASE_URL=postgresql://x:x@localhost/x pnpm exec prisma generate
 RUN pnpm build
-RUN node_modules/.bin/tsc --skipLibCheck --module commonjs --esModuleInterop --moduleResolution node --outDir . prisma.config.ts
 
 # ── Stage 2: RUNTIME ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS runtime
@@ -29,8 +28,8 @@ WORKDIR /build/notifications-ms
 
 COPY --from=builder /build/notifications-ms/node_modules ./node_modules
 COPY --from=builder /build/notifications-ms/dist ./dist
-COPY --from=builder /build/notifications-ms/prisma.config.js ./prisma.config.js
 COPY notifications-ms/prisma ./prisma
+COPY notifications-ms/prisma.config.ts ./prisma.config.ts
 COPY notifications-ms/healthcheck.js ./healthcheck.js
 
 USER node
