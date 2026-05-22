@@ -1,0 +1,26 @@
+{
+  "iteration": 2,
+  "phase": "pr",
+  "status": "pass",
+  "updatedAt": "2026-05-14T23:55:00Z",
+  "summary": "PR #14 opened: feat(iter-2): SOAT registration + FCM notification foundation — https://github.com/CamiiloAF/Rideglory/pull/14",
+  "metrics": {
+    "tokens": 0,
+    "costUsd": 0.0
+  },
+  "artifacts": [
+    "docs/PULL_REQUEST_BODY_ITER_2.md"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "PR body file written and PR opened successfully."
+    },
+    {
+      "name": "pr_opened",
+      "status": "pass",
+      "detail": "PR #14 opened at https://github.com/CamiiloAF/Rideglory/pull/14"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "iteration": 2,
+  "phase": "backend",
+  "status": "pass",
+  "updatedAt": "2026-05-14T22:30:00Z",
+  "summary": "Iter-2 backend complete: SOAT model + POST/GET endpoints (vehicles-ms); fcmToken migration + updateFcmToken/getFcmTokenByEmail patterns (users-ms); api-gateway first-time Prisma with Notification model + 4 notification endpoints (cursor-paginated list, read, read-all, fcm-token registration); FCM triggers on registration create/approve/reject; NotificationSchedulerService with SOAT_30D/SOAT_7D/SOAT_DAY_OF @Cron (America/Bogota). 28 unit tests pass, 0 TypeScript errors across all 3 affected services.",
+  "metrics": {
+    "tokens": 0,
+    "costUsd": 0.0
+  },
+  "artifacts": [
+    "docs/handoffs/backend.md",
+    "workflow/state.json",
+    "docs/handoffs/contracts/iter-2/backend.json",
+    ".claude/skills/backend-skill.md",
+    "rideglory-api/users-ms/prisma/schema.prisma (fcmToken migration)",
+    "rideglory-api/users-ms/prisma/migrations/20260514221319_add_fcm_token_to_user/",
+    "rideglory-api/vehicles-ms/prisma/schema.prisma (Soat model)",
+    "rideglory-api/vehicles-ms/prisma/migrations/20260514221620_add_soat_model/",
+    "rideglory-api/vehicles-ms/src/vehicles/soat.service.ts",
+    "rideglory-api/vehicles-ms/src/vehicles/soat.service.spec.ts",
+    "rideglory-api/vehicles-ms/src/vehicles/dto/create-soat.dto.ts",
+    "rideglory-api/vehicles-ms/prisma/seed.ts",
+    "rideglory-api/events-ms/prisma/seed.ts",
+    "rideglory-api/api-gateway/prisma/schema.prisma (Notification model)",
+    "rideglory-api/api-gateway/prisma/migrations/20260514221506_init_notifications/",
+    "rideglory-api/api-gateway/src/notifications/notifications.service.ts",
+    "rideglory-api/api-gateway/src/notifications/notifications.service.spec.ts",
+    "rideglory-api/api-gateway/src/notifications/notifications.controller.ts",
+    "rideglory-api/api-gateway/src/notifications/notifications.module.ts",
+    "rideglory-api/api-gateway/src/notifications/dto/register-fcm-token.dto.ts",
+    "rideglory-api/api-gateway/src/scheduler/notification-scheduler.service.ts",
+    "rideglory-api/api-gateway/src/scheduler/notification-scheduler.module.ts",
+    "rideglory-api/api-gateway/src/vehicles/dto/create-soat.dto.ts",
+    "rideglory-api/api-gateway/src/registrations/registrations.controller.ts",
+    "rideglory-api/api-gateway/src/app.module.ts",
+    "rideglory-api/api-gateway/docker-compose.yml",
+    "rideglory-api/api-gateway/.env.example"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "All backend files committed to rideglory-api."
+    },
+    {
+      "name": "tests_passed_or_accepted",
+      "status": "pass",
+      "detail": "jest api-gateway: 19/19 PASS; jest vehicles-ms: 9/9 PASS; 0 TS errors across all 3 services."
+    },
+    {
+      "name": "security_checks",
+      "status": "pass",
+      "detail": "All endpoints require FirebaseAuthGuard. No secrets in source code (.env.example only). FCM payloads use scalar IDs only."
+    },
+    {
+      "name": "cursor_pagination_enforced",
+      "status": "pass",
+      "detail": "Cursor pagination enforced (no offset/limit). America/Bogota timezone on all crons."
+    }
+  ]
+}

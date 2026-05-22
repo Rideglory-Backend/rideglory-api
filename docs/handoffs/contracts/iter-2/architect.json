@@ -1,0 +1,71 @@
+{
+  "iteration": 2,
+  "phase": "architect",
+  "status": "pass",
+  "updatedAt": "2026-05-14T23:00:00Z",
+  "summary": "Iteration 2 is full-stack: two new Flutter features and rideglory-api changes across vehicles-ms, users-ms, and api-gateway. lib/features/soat/ is built from scratch as a 3-layer Clean Architecture feature (SoatModel with client-side SoatStatus computed getter, SoatDto/SoatService Retrofit, SoatRepositoryImpl with Firebase Storage upload, SoatCubit as Cubit<ResultState<SoatModel>>, three pages). lib/features/notifications/ already exists as an iter-1 mock-only stub and is rebuilt: NotificationModel extended with payload, new domain/repository + data layer, NotificationsCubit rewritten to @injectable Cubit<@freezed NotificationsState> with cursor pagination. FcmService added to core/services with a @pragma('vm:entry-point') background isolate handler that re-calls configureDependencies(). 6 API contracts: POST/GET /api/vehicles/:vehicleId/soat (vehicles-ms), POST /api/notifications/fcm-token + GET /api/notifications (cursor) + PATCH /api/notifications/:id/read + PATCH /api/notifications/read-all (api-gateway). Backend: api-gateway gets its first-ever Prisma schema (Notification model), vehicles-ms gets a Soat model (one-to-one with Vehicle), users-ms User gets fcmToken String?. SoatStatus 4-state badge computed client-side from expiryDate vs now (<=30d boundary). GoRouter DI assessment: AppRouter.appRouter is a static top-level GoRouter, NOT GetIt-registered — refactor needed for iter-5 NotificationRouteHandler, deferred. 4 slim role handoffs delivered. DIAGRAMS.md updated with ERD and two sequence diagrams.",
+  "metrics": {
+    "tokens": 150826,
+    "costUsd": 1.5,
+    "newFlutterFeatures": 2,
+    "newDomainModels": 2,
+    "newDtos": 3,
+    "newRetrofitServices": 2,
+    "newCubits": 1,
+    "rebuiltCubits": 1,
+    "newCoreServices": 1,
+    "newApiEndpoints": 6,
+    "newBackendPrismaModels": 2,
+    "modifiedBackendPrismaModels": 1,
+    "newEnvVars": 1,
+    "newFlutterPackages": 3,
+    "newBackendPackages": 1
+  },
+  "apiContracts": [
+    { "method": "POST", "path": "/api/vehicles/:vehicleId/soat", "service": "vehicles-ms" },
+    { "method": "GET", "path": "/api/vehicles/:vehicleId/soat", "service": "vehicles-ms" },
+    { "method": "POST", "path": "/api/notifications/fcm-token", "service": "api-gateway" },
+    { "method": "GET", "path": "/api/notifications?cursor=&limit=20", "service": "api-gateway" },
+    { "method": "PATCH", "path": "/api/notifications/:id/read", "service": "api-gateway" },
+    { "method": "PATCH", "path": "/api/notifications/read-all", "service": "api-gateway" }
+  ],
+  "artifacts": [
+    "docs/handoffs/architect.md",
+    "docs/handoffs/architect-for-backend.md",
+    "docs/handoffs/architect-for-frontend.md",
+    "docs/handoffs/architect-for-devops.md",
+    "docs/handoffs/architect-for-qa.md",
+    "docs/architecture/DIAGRAMS.md",
+    "docs/handoffs/iteration_checkpoint.md",
+    "workflow/state.json",
+    "docs/handoffs/contracts/iter-2/architect.json",
+    ".claude/skills/architect-skill.md"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "architect.md + 4 slim role handoffs + DIAGRAMS.md (ERD + 2 sequence diagrams) + iteration_checkpoint.md updated + skill updated + contract JSON written."
+    },
+    {
+      "name": "architecture_contracts_defined",
+      "status": "pass",
+      "detail": "6 API contracts with method/path/auth/request/response/errors. New domain models (SoatModel, extended NotificationModel), DTOs (SoatDto, NotificationDto, NotificationPageDto), Retrofit services, repositories, cubits all specified with file paths. Backend Prisma models (Soat, Notification) and fcmToken field defined. Cursor pagination contract { data, nextCursor } locked."
+    },
+    {
+      "name": "slim_handoffs_within_120_lines",
+      "status": "pass",
+      "detail": "architect-for-backend.md, architect-for-frontend.md, architect-for-devops.md, architect-for-qa.md each under 120 lines."
+    },
+    {
+      "name": "no_scope_drift",
+      "status": "pass",
+      "detail": "All decisions stay inside PO scope. Home Dashboard SOAT badge deferred to iter-3. Notification tap routing deferred to iter-5. OCR deferred. GoRouter DI refactor assessed but deferred (not iter-2 work). Story 2.9 confirmed presentation-only."
+    },
+    {
+      "name": "brownfield_extend_not_rebuild",
+      "status": "pass",
+      "detail": "Existing notifications stub identified and scheduled for rewire (not discard). DocumentSlotPill (iter-1 molecule) reused for SOAT badge. SoatDto/SoatService follow VehicleDto/VehicleService template. No re-derivation of established stack."
+    }
+  ]
+}

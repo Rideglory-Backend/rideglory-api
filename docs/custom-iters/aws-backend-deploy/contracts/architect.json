@@ -1,0 +1,84 @@
+{
+  "phase": "architect",
+  "slug": "aws-backend-deploy",
+  "status": "pass",
+  "completedAt": "2026-05-19T00:00:00Z",
+  "summary": "Two surgical fixes verified, no additional issues found. Notifications-ms nest-cli outDir is the only outlier; users-ms is the only MS missing dotenv. Defined memory-safe serial rebuild sequence for 1GB EC2.",
+  "changeMap": [
+    {
+      "file": "/Users/cami/Developer/Personal/rideglory-api/notifications-ms/nest-cli.json",
+      "action": "modify",
+      "change": "compilerOptions.assets[0].outDir: 'dist' -> 'dist/src'",
+      "risk": "low"
+    },
+    {
+      "file": "/Users/cami/Developer/Personal/rideglory-api/users-ms/package.json",
+      "action": "modify",
+      "change": "Add \"dotenv\": \"^17.4.2\" to dependencies (alphabetical, between class-validator and joi)",
+      "risk": "low"
+    },
+    {
+      "file": "/Users/cami/Developer/Personal/rideglory-api/users-ms/pnpm-lock.yaml",
+      "action": "regenerate",
+      "change": "Run 'pnpm install' inside users-ms/ (each MS has its own lockfile; no monorepo workspace exists)",
+      "risk": "low"
+    }
+  ],
+  "additionalIssuesFound": [],
+  "auditedMicroservices": [
+    { "name": "api-gateway", "prismaCustomOutput": false, "nestCliOutDir": "n/a", "dotenvInDeps": true, "verdict": "ok" },
+    { "name": "events-ms", "prismaCustomOutput": true, "nestCliOutDir": "dist/src", "dotenvInDeps": true, "verdict": "ok" },
+    { "name": "maintenances-ms", "prismaCustomOutput": true, "nestCliOutDir": "dist/src", "dotenvInDeps": true, "verdict": "ok" },
+    { "name": "notifications-ms", "prismaCustomOutput": true, "nestCliOutDir": "dist (BROKEN)", "dotenvInDeps": true, "verdict": "needs_fix_1" },
+    { "name": "users-ms", "prismaCustomOutput": true, "nestCliOutDir": "dist/src", "dotenvInDeps": false, "verdict": "needs_fix_2" },
+    { "name": "vehicles-ms", "prismaCustomOutput": true, "nestCliOutDir": "dist/src", "dotenvInDeps": true, "verdict": "ok" }
+  ],
+  "deploymentStrategy": {
+    "ec2Host": "13.222.116.14",
+    "ec2User": "ec2-user",
+    "sshKey": "~/.ssh/rideglory-key.pem",
+    "appDir": "/opt/rideglory",
+    "memoryConstraint": "1GB total RAM; parallel docker compose build will OOM",
+    "approach": "serial-rebuild",
+    "sequence": [
+      "stop all app services (keep postgres up)",
+      "git pull on EC2",
+      "docker system prune -f",
+      "docker compose build --no-cache notifications-ms",
+      "docker compose build --no-cache users-ms",
+      "docker compose up -d postgres",
+      "docker compose up -d users-ms (wait 75s)",
+      "docker compose up -d vehicles-ms events-ms maintenances-ms notifications-ms (wait 70s)",
+      "docker compose up -d api-gateway (wait 30s)",
+      "verify health"
+    ],
+    "ommFallback": "Stop postgres for the single failing build, or pass NODE_OPTIONS=--max-old-space-size=400"
+  },
+  "successCriteria": [
+    "docker compose ps shows 7 containers all (healthy)",
+    "curl http://13.222.116.14:3000/api/health returns HTTP 200",
+    "users-ms logs contain no 'Cannot find module dotenv/config'",
+    "notifications-ms logs contain no 'Cannot find module ../generated/prisma'",
+    "postgres remains healthy (no restart events) throughout deploy window"
+  ],
+  "backendAgentPermissions": {
+    "modifyRideglorApiFiles": true,
+    "runPnpmInstall": true,
+    "runNestBuild": true,
+    "commitAndPushToRideglorApi": true,
+    "sshToEc2AndDeploy": true,
+    "modifyFlutterRepo": false,
+    "modifyDocsPRD": false,
+    "modifyWorkflowState": false,
+    "modifyDockerCompose": false,
+    "modifyDockerfiles": false,
+    "runTerraformApply": false
+  },
+  "artifacts": [
+    "docs/custom-iters/aws-backend-deploy/handoffs/architect.md",
+    "docs/custom-iters/aws-backend-deploy/handoffs/architect-for-backend.md",
+    "docs/custom-iters/aws-backend-deploy/handoffs/architect-for-qa.md",
+    "docs/custom-iters/aws-backend-deploy/contracts/architect.json"
+  ],
+  "nextPhase": "backend"
+}

@@ -1,0 +1,112 @@
+{
+  "iteration": 2,
+  "phase": "design",
+  "agent": "design",
+  "status": "pass",
+  "updatedAt": "2026-05-14T23:30:00Z",
+  "summary": "Iter-2 design phase complete. 22 screens/states designed across 3 HTML mockup files: SOAT upload+manual+status flow (4-state badge), notification center rebuild (6 notification types, bell badge), ManageAttendeesPage UPDATE scope confirmed (list+edit, component-swap + state polish). Full UI copy in soat_ and notification_ prefixes. DocumentSlotPill→SoatStatus 1:1 state mapping documented. Pencil MCP unavailable — HTML mockups serve as design gate. Story 2.9 scope = UPDATE (no layout rework).",
+  "metrics": {
+    "tokens": 18500,
+    "costUsd": 0.056
+  },
+  "artifacts": [
+    "docs/handoffs/design.md",
+    "docs/design/html-mockups/iter-2/styles.css",
+    "docs/design/html-mockups/iter-2/soat.html",
+    "docs/design/html-mockups/iter-2/notifications.html",
+    "docs/design/html-mockups/iter-2/attendees.html",
+    "docs/handoffs/contracts/iter-2/design.json",
+    "workflow/state.json",
+    ".claude/skills/design-skill.md"
+  ],
+  "qualityGates": [
+    {
+      "status": "pass",
+      "name": "All SOAT states designed (Sin SOAT, Vigente, Por vencer, Vencido)"
+    },
+    {
+      "status": "pass",
+      "name": "All 6 notification types have row templates"
+    },
+    {
+      "status": "pass",
+      "name": "NotificationCenterPage has loading/data/empty/error states"
+    },
+    {
+      "status": "pass",
+      "name": "SoatUploadPage has default/uploading/error states"
+    },
+    {
+      "status": "pass",
+      "name": "SoatManualFormPage has default/validation-error states"
+    },
+    {
+      "status": "pass",
+      "name": "SoatStatusPage has all 3 live states (Vigente, Por vencer, Vencido)"
+    },
+    {
+      "status": "pass",
+      "name": "AttendeesPage (Story 2.9) scope confirmed: list+edit UPDATE, component-swap + state polish"
+    },
+    {
+      "status": "pass",
+      "name": "DocumentSlotPill → SoatStatus 1:1 mapping documented with localized stateLabel contract"
+    },
+    {
+      "status": "pass",
+      "name": "NotificationBellButton spec documented (44px tap target, backend-sourced unreadCount, 99+ truncation)"
+    },
+    {
+      "status": "pass",
+      "name": "All UI copy in Spanish (sentence case for buttons), soat_ and notification_ key prefixes"
+    },
+    {
+      "status": "pass",
+      "name": "Design system tokens unchanged from iter-1 (no new tokens introduced)"
+    },
+    {
+      "status": "pass",
+      "name": "UX flow rules documented for SOAT entry points and upload phases"
+    },
+    {
+      "status": "pass",
+      "name": "Accessibility notes documented for all new components"
+    },
+    {
+      "status": "pass",
+      "name": "Error messages mapped to API error codes"
+    },
+    {
+      "name": "design_coverage_complete",
+      "status": "pass",
+      "detail": "Verified: all stories have mockups and all required artifacts are present."
+    },
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "Verified: all stories have mockups and all required artifacts are present."
+    }
+  ],
+  "keyDecisions": [
+    {
+      "decision": "Story 2.9 scope = UPDATE (component-swap + state polish)",
+      "rationale": "Inspecting codebase confirmed list+edit layout is fully implemented (attendees_data_view.dart, attendees_list.dart). No layout rework needed — only AppButton/AppDialog adoption, no hardcoded colors, loading/empty/error state polish."
+    },
+    {
+      "decision": "DocumentSlotPill maps 1:1 to SoatStatus enum",
+      "rationale": "Iter-1 created DocumentSlotPill with empty/valid/expiringSoon/expired states that map exactly to SOAT boundary rules. Reuse without modification."
+    },
+    {
+      "decision": "NotificationBellButton replaces HomeNotificationButton",
+      "rationale": "New widget with unread badge sourced from NotificationsCubit.state.unreadCount (backend-sourced, not local). Named NotificationBellButton to clarify its scope."
+    },
+    {
+      "decision": "SoatUploadPage uses 2x2 source grid (Camera/Gallery/PDF/Manual)",
+      "rationale": "All 4 entry points are visually discoverable on a single page. Manual entry is included as a grid option to reduce dead-ends and improve discoverability."
+    },
+    {
+      "decision": "Pencil MCP unavailable — HTML mockups are the design gate",
+      "rationale": "Pencil desktop app not running. Following established pattern from iter-1: HTML mockups serve as design gate. Pencil frames must be created before frontend implements."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "iteration": 3,
+  "phase": "design",
+  "agent": "design",
+  "status": "pass",
+  "updatedAt": "2026-05-15T02:30:00Z",
+  "summary": "20 screen states designed across 5 HTML mockups. SOS flow (confirmation dialog, sent state, banner with Llamar/Localizar, no-phone empty state), organizer controls (Iniciar/Terminar rodada dialogs, ride finished overlay), tracking map states (normal, off-route, organizer view with control bar), Android foreground service notification, iOS Info.plist location strings, push notification copy for all 4 new notification types (SOS, maintenance reminder, event reminder, ride ended), Home Dashboard SOAT badge (4 states: vigente, por vencer, vencido, sin registrar). 30+ l10n keys specified. 4 new Flutter widget shapes defined. Pencil frame update list for qonbS and kAubW provided.",
+  "metrics": {
+    "tokens": 18500,
+    "costUsd": 0.06
+  },
+  "artifacts": [
+    "docs/handoffs/design.md",
+    "docs/design/html-mockups/iter-3/styles.css",
+    "docs/design/html-mockups/iter-3/tracking-map.html",
+    "docs/design/html-mockups/iter-3/sos-flow.html",
+    "docs/design/html-mockups/iter-3/organizer-controls.html",
+    "docs/design/html-mockups/iter-3/notifications-push.html",
+    "docs/design/html-mockups/iter-3/home-soat-badge.html",
+    "workflow/state.json",
+    ".claude/skills/design-skill.md"
+  ],
+  "qualityGates": [
+    {
+      "name": "design_coverage_complete",
+      "status": "pass",
+      "detail": "All user-facing stories (3.0 note, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.10) have mockup coverage or design notes. Story 3.0 (SDK swap) documented as design note only (invisible to users). 20 screen states across 4 feature areas covered."
+    },
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "docs/handoffs/design.md present (full handoff with story classification, component hierarchy, UI copy table, error messages, accessibility notes, Pencil frame list). docs/design/html-mockups/iter-3/ contains 5 HTML files + styles.css. workflow/state.json updated (design.status=idle, events appended). docs/handoffs/contracts/iter-3/design.json present."
+    },
+    {
+      "name": "design_system_compliance",
+      "status": "pass",
+      "detail": "All mockups use locked tokens: bg #0A0A0A, primary #f98c1f, Space Grotesk font, 8px button radius, 12px card radius, 24px bottom sheet radius. No new tokens introduced. SOS red reuses AppColors.error (#EF4444). All button text in sentence case. All copy in Spanish."
+    },
+    {
+      "name": "ux_rules_compliance",
+      "status": "pass",
+      "detail": "SOS banner anchored top, non-blocking to map. No blank error states — all errors have snackbar or action. Minimum 44px touch targets specified (SOS banner action buttons flagged as needing padding increase). Dialogs use ConfirmationDialog pattern. Route adherence chip shown always, not blocking. Empty state for 'no phone' specified."
+    },
+    {
+      "name": "accessibility_reviewed",
+      "status": "pass",
+      "detail": "Touch targets documented. SOS FAB 56px (exceeds 44px). SOS banner buttons flagged for padding increase to 44px. SOS animation has MediaQuery.disableAnimations check note. Semantics label for SOS FAB specified. WCAG contrast checked: white on #EF4444 = 4.6:1 (AA pass)."
+    }
+  ]
+}

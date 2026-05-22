@@ -1,0 +1,29 @@
+{
+  "phase": "po",
+  "status": "pass",
+  "completedAt": "2026-05-19T00:00:00Z",
+  "slug": "aws-backend-deploy",
+  "goal": "Fix two root-cause build errors (notifications-ms nest-cli.json outDir, users-ms missing dotenv dep) and redeploy to EC2 at 13.222.116.14 so the production API health check returns HTTP 200.",
+  "improvementType": "fix",
+  "severity": "high",
+  "phaseDecisions": {
+    "needsDesign": false,
+    "needsBackend": true,
+    "needsFrontend": false,
+    "needsDb": false
+  },
+  "acceptanceCriteria": [
+    "notifications-ms/nest-cli.json assets outDir changed from 'dist' to 'dist/src'",
+    "users-ms/package.json includes dotenv ^17.4.2 in dependencies",
+    "pnpm-lock.yaml updated at monorepo root",
+    "Both MS compile locally (nest build exits 0)",
+    "Fixes committed and pushed to main on rideglory-api",
+    "docker compose up --build -d succeeds on EC2",
+    "All containers reach healthy status",
+    "GET http://13.222.116.14:3000/api/health returns HTTP 200"
+  ],
+  "artifacts": {
+    "prdNormalized": "docs/custom-iters/aws-backend-deploy/PRD_NORMALIZED.md",
+    "handoff": "docs/custom-iters/aws-backend-deploy/handoffs/po.md"
+  }
+}

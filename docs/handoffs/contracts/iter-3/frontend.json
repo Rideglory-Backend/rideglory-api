@@ -1,0 +1,155 @@
+{
+  "iteration": 3,
+  "agent": "frontend",
+  "phase": "frontend",
+  "status": "pass",
+  "completedAt": "2026-05-14",
+  "storiesDelivered": [
+    "3.0",
+    "3.1",
+    "3.2",
+    "3.3",
+    "3.4",
+    "3.5",
+    "3.10"
+  ],
+  "storiesDeferred": [
+    "3.9"
+  ],
+  "qualityGate": {
+    "dartAnalyze": "0 errors, 0 warnings (3 info-level Mapbox SDK deprecations — acceptable)",
+    "flutterTest": "43 pass, 1 pre-existing failure (TC-2-28 — unrelated to iter-3)",
+    "googleMapsImports": "0 — verified",
+    "geocodingImports": "0 — verified"
+  },
+  "newFiles": [
+    "lib/features/events/domain/model/sos_alert_model.dart",
+    "lib/features/events/presentation/tracking/widgets/sos_banner.dart",
+    "lib/features/events/presentation/tracking/widgets/organizer_control_bar.dart",
+    "lib/features/events/presentation/tracking/widgets/ride_finished_overlay.dart",
+    "lib/core/services/dto/geocode_result_dto.dart",
+    "lib/shared/models/address_location.dart"
+  ],
+  "modifiedFiles": [
+    "pubspec.yaml",
+    "lib/main.dart",
+    "lib/core/config/app_env.dart",
+    "lib/core/http/api_routes.dart",
+    "lib/core/services/place_service.dart",
+    "lib/features/events/data/service/event_service.dart",
+    "lib/features/events/data/service/tracking_ws_client.dart",
+    "lib/features/events/presentation/tracking/cubit/live_tracking_cubit.dart",
+    "lib/features/events/presentation/tracking/cubit/live_tracking_cubit_factory.dart",
+    "lib/features/events/presentation/tracking/cubit/live_tracking_state.dart",
+    "lib/features/events/presentation/tracking/live_map_page.dart",
+    "lib/features/events/presentation/tracking/widgets/initials_marker_icon.dart",
+    "lib/features/events/presentation/tracking/widgets/live_map_widget.dart",
+    "lib/features/events/presentation/tracking/widgets/sos_button.dart",
+    "lib/features/home/presentation/widgets/home_garage_card.dart",
+    "lib/features/vehicles/data/dto/vehicle_dto.dart",
+    "lib/features/vehicles/domain/models/vehicle_model.dart",
+    "lib/l10n/app_es.arb",
+    "lib/shared/widgets/map/route_map_preview.dart",
+    "android/app/src/main/AndroidManifest.xml"
+  ],
+  "contractsConsumed": {
+    "backend": [
+      {
+        "endpoint": "POST /api/events/:id/tracking/start",
+        "consumedBy": "EventService.startRide()",
+        "status": "backend_done_flutter_wired"
+      },
+      {
+        "endpoint": "POST /api/events/:id/tracking/end",
+        "consumedBy": "EventService.endRide()",
+        "status": "backend_done_flutter_wired"
+      },
+      {
+        "endpoint": "GET /api/places/geocode?q=<address>",
+        "consumedBy": "PlaceService.geocode() → GeocodeResultDto",
+        "status": "backend_done_flutter_wired"
+      },
+      {
+        "wsEvent": "tracking.sos.alert",
+        "consumedBy": "TrackingWsClient.sosAlerts stream",
+        "status": "backend_done_flutter_wired"
+      },
+      {
+        "wsEvent": "tracking.event.ended",
+        "consumedBy": "TrackingWsClient.eventEnded stream",
+        "status": "backend_done_flutter_wired"
+      }
+    ]
+  },
+  "l10nKeysAdded": [
+    "sos_button_label",
+    "sos_confirm_title",
+    "sos_confirm_body",
+    "sos_confirm_action",
+    "sos_sent_confirmation",
+    "sos_banner_title",
+    "sos_banner_subtitle_with_phone",
+    "sos_banner_subtitle_no_phone",
+    "sos_call_action",
+    "sos_locate_action",
+    "tracking_start_ride",
+    "tracking_start_ride_confirm_title",
+    "tracking_start_ride_confirm_body",
+    "tracking_end_ride",
+    "tracking_end_ride_confirm_title",
+    "tracking_end_ride_confirm_body",
+    "tracking_organizer_badge",
+    "tracking_organizer_label",
+    "tracking_ride_finished",
+    "tracking_ride_finished_body",
+    "tracking_back_to_home",
+    "tracking_riders_count",
+    "tracking_rider_status_on_route",
+    "tracking_rider_status_sos",
+    "tracking_fg_service_title",
+    "tracking_fg_service_body",
+    "vehicle_soat_badge_label",
+    "vehicle_soat_tap_to_add",
+    "vehicle_soat_update"
+  ],
+  "architecturalNotes": [
+    "geolocator imported as `geo` prefix in live_map_page.dart and live_map_widget.dart to resolve Position/LocationSettings ambiguity with mapbox_maps_flutter",
+    "mapbox_maps_flutter imported with `hide Error` in route_map_preview.dart to avoid name conflict with ResultState<T>.Error",
+    "PointAnnotation does not expose copyWith — reconstructed with existing id field for annotation updates",
+    "MapboxOptions.setAccessToken() called in main() before runApp()",
+    "SoatStatus enum lives in domain layer (vehicle_model.dart) — no Flutter imports"
+  ],
+  "updatedAt": "2026-05-15T04:30:00Z",
+  "summary": "Mapbox migration (Story 3.0), SOS flow (3.1/3.2), organizer controls (3.3/3.4), background GPS (3.5), SOAT home badge (3.10). dart analyze 0 issues, flutter test 43 pass / 1 pre-existing fail.",
+  "metrics": {
+    "tokens": 153895,
+    "costUsd": 1.5
+  },
+  "artifacts": [
+    "lib/features/events/presentation/tracking/",
+    "lib/features/events/data/service/event_service.dart",
+    "lib/features/events/domain/models/event_model.dart",
+    "lib/features/vehicles/domain/models/vehicle_model.dart",
+    "lib/core/http/tracking_ws_client.dart",
+    "lib/features/home/presentation/widgets/",
+    "pubspec.yaml",
+    "android/app/src/main/AndroidManifest.xml"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "All new/modified files committed."
+    },
+    {
+      "name": "tests_passed_or_accepted",
+      "status": "pass",
+      "detail": "flutter test: 43 pass / 1 pre-existing fail (TC-2-28 rider email, unrelated to iter-3)."
+    },
+    {
+      "name": "lint_passes",
+      "status": "pass",
+      "detail": "dart analyze: 0 errors, 0 warnings (3 info-level Mapbox SDK deprecation hints — SDK-internal, acceptable)."
+    }
+  ]
+}

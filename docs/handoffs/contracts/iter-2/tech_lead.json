@@ -1,0 +1,118 @@
+{
+  "iteration": 2,
+  "phase": "tech_lead",
+  "status": "approved",
+  "updatedAt": "2026-05-15T01:00:00Z",
+  "summary": "PR #14 approved after re-review cycle. Initial review BLOCKED with 4 coding-standards violations. All 4 violations resolved: AppTextButton used throughout, 12 widget classes extracted to 11 separate files, Semantics labels use ARB keys via context.l10n, go_router named routes replace MaterialPageRoute. Architecture is clean (no layer violations, ResultState<T> correct, cursor pagination enforced, FCM @pragma handler correct, NotificationsCubit @lazySingleton in root MultiBlocProvider correct). dart analyze: No issues found. flutter test: 64 pass / 1 pre-existing fail (TC-2-28, unchanged from iter-1). Decision: APPROVED.",
+  "metrics": {
+    "tokens": 0,
+    "costUsd": 0.0
+  },
+  "artifacts": [
+    "docs/handoffs/tech_lead.md",
+    "workflow/state.json",
+    "docs/handoffs/iteration_checkpoint.md",
+    "docs/handoffs/contracts/iter-2/tech_lead.json",
+    ".claude/skills/tech_lead-skill.md"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "tech_lead.md, state.json, iteration_checkpoint.md, tech_lead.json, tech_lead-skill.md all written"
+    },
+    {
+      "name": "architecture_clean",
+      "status": "pass",
+      "detail": "Domain layer: zero Flutter imports. Data layer: zero BuildContext. Presentation: no direct HTTP calls, no DTO exposure. Dependencies flow correctly. ResultState<T> pattern used throughout. FCM @pragma('vm:entry-point') present. Cursor pagination enforced."
+    },
+    {
+      "name": "lint_passes",
+      "status": "pass",
+      "detail": "dart analyze: No issues found! (0 errors, 0 warnings). Exit code 0."
+    },
+    {
+      "name": "tests_pass",
+      "status": "pass",
+      "detail": "flutter test: 64 pass / 1 pre-existing fail (TC-2-28 rider email — unchanged from iter-1). 21 new test cases added (TC-2-20 through TC-2-40). 0 new failures."
+    },
+    {
+      "name": "security_checks",
+      "status": "pass",
+      "detail": "No secrets in source. Firebase ID token auth via interceptor on all API calls. FCM token only partially logged (first 10 chars) in kDebugMode using dart:developer log. google-services.json not tracked. No print() calls in lib/."
+    },
+    {
+      "name": "review_completed",
+      "status": "pass",
+      "detail": "PR #14 reviewed in full. Decision: BLOCKED — 4 violations found (TextButton, one-widget-per-file, hardcoded Semantics strings, MaterialPageRoute). Fix cycle in progress."
+    }
+  ],
+  "reReview": {
+    "date": "2026-05-15",
+    "verdict": "APPROVED",
+    "dartAnalyze": "PASS — No issues found! (0 errors, 0 warnings)",
+    "flutterTest": "PASS — 64 pass / 1 pre-existing fail (TC-2-28 unchanged)",
+    "violationsResolved": [
+      {
+        "id": "BLOCKING-1",
+        "status": "fixed",
+        "detail": "AppTextButton used in notifications_view.dart (markAllRead action) and soat_status_view.dart (edit action). No raw TextButton remaining."
+      },
+      {
+        "id": "BLOCKING-2",
+        "status": "fixed",
+        "detail": "11 files created: soat_data_view.dart, soat_detail_row.dart, soat_empty_state.dart, soat_manual_form_view.dart, soat_section_header.dart, soat_source_grid.dart, soat_source_option.dart, soat_status_view.dart (soat/widgets/), and notifications_data_view.dart, notifications_empty_state.dart, notifications_error_state.dart (notifications/widgets/). Each file contains exactly one widget class."
+      },
+      {
+        "id": "BLOCKING-3",
+        "status": "fixed",
+        "detail": "ARB keys added: notification_bell_unread_label (with {count} placeholder), notification_bell_label, notification_item_accessibility_label (with {title} and {time} placeholders). All Semantics labels use context.l10n.<key>."
+      },
+      {
+        "id": "BLOCKING-4",
+        "status": "fixed",
+        "detail": "AppRoutes.soatUpload, AppRoutes.soatStatus, AppRoutes.soatManualForm added to app_routes.dart. Three GoRoute entries registered in app_router.dart. All soat navigation uses context.pushNamed(). No MaterialPageRoute remaining."
+      }
+    ]
+  },
+  "blockingIssues": [
+    {
+      "id": "BLOCKING-1",
+      "description": "Raw TextButton in feature code",
+      "files": [
+        "lib/features/notifications/presentation/notifications_view.dart:34",
+        "lib/features/soat/presentation/pages/soat_status_page.dart:64"
+      ],
+      "fix": "Replace with AppTextButton(label: context.l10n.<key>, onPressed: ...)"
+    },
+    {
+      "id": "BLOCKING-2",
+      "description": "One-widget-per-file violation — multiple widget classes in same file",
+      "files": [
+        "lib/features/soat/presentation/pages/soat_manual_form_page.dart (3 classes)",
+        "lib/features/soat/presentation/pages/soat_status_page.dart (5 classes)",
+        "lib/features/soat/presentation/pages/soat_upload_page.dart (3 classes)",
+        "lib/features/notifications/presentation/notifications_view.dart (4 classes)"
+      ],
+      "fix": "Extract each widget class to its own file"
+    },
+    {
+      "id": "BLOCKING-3",
+      "description": "Hardcoded Spanish strings in Semantics labels",
+      "files": [
+        "lib/features/notifications/presentation/widgets/notification_bell_button.dart:21-22",
+        "lib/features/notifications/presentation/widgets/notification_item.dart:69"
+      ],
+      "fix": "Add ARB keys for accessibility labels and use context.l10n.<key>"
+    },
+    {
+      "id": "BLOCKING-4",
+      "description": "MaterialPageRoute bypasses go_router navigation standards",
+      "files": [
+        "lib/features/soat/presentation/pages/soat_status_page.dart:131",
+        "lib/features/soat/presentation/pages/soat_upload_page.dart:108"
+      ],
+      "fix": "Add AppRoutes.soatManualForm named route and navigate via context.pushNamed()"
+    }
+  ]
+}

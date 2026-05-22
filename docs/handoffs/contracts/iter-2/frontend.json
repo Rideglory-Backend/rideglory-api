@@ -1,0 +1,155 @@
+{
+  "agent": "frontend",
+  "iteration": 2,
+  "completedAt": "2026-05-14T23:59:00Z",
+  "status": "pass",
+  "storiesDelivered": [
+    "2.6",
+    "2.11"
+  ],
+  "storiesConfirmedOutOfScope": [
+    "2.9"
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "status": "pass",
+      "detail": "All new/modified files committed in 76c660e."
+    },
+    {
+      "name": "tests_passed_or_accepted",
+      "status": "pass",
+      "detail": "flutter test: 64 pass / 1 pre-existing fail (rider_profile_page_test, unrelated to iter-2)."
+    },
+    {
+      "name": "lint_passes",
+      "status": "pass",
+      "detail": "dart analyze: 0 issues (1 TODO info-level in soat_upload_page.dart for image_picker wiring — deferred to when package is enabled)."
+    },
+    {
+      "name": "architecture_clean",
+      "status": "pass",
+      "detail": "No layer violations: domain has no Flutter imports, data has no BuildContext, presentation uses no DTOs directly."
+    }
+  ],
+  "newFiles": [
+    "lib/features/soat/domain/models/soat_model.dart",
+    "lib/features/soat/domain/repository/soat_repository.dart",
+    "lib/features/soat/domain/usecases/get_soat_usecase.dart",
+    "lib/features/soat/domain/usecases/save_soat_usecase.dart",
+    "lib/features/soat/data/dto/soat_dto.dart",
+    "lib/features/soat/data/service/soat_service.dart",
+    "lib/features/soat/data/repository/soat_repository_impl.dart",
+    "lib/features/soat/presentation/cubit/soat_cubit.dart",
+    "lib/features/soat/presentation/pages/soat_upload_page.dart",
+    "lib/features/soat/presentation/pages/soat_manual_form_page.dart",
+    "lib/features/soat/presentation/pages/soat_status_page.dart",
+    "lib/features/vehicles/presentation/garage/widgets/vehicle_soat_section.dart",
+    "lib/features/notifications/presentation/cubit/notifications_state.dart",
+    "lib/features/notifications/presentation/widgets/notification_bell_button.dart",
+    "lib/core/services/fcm_service.dart"
+  ],
+  "modifiedFiles": [
+    "lib/features/notifications/domain/model/notification_model.dart",
+    "lib/features/notifications/domain/repository/notifications_repository.dart",
+    "lib/features/notifications/data/dto/notification_dto.dart",
+    "lib/features/notifications/data/service/notifications_service.dart",
+    "lib/features/notifications/data/repository/notifications_repository_impl.dart",
+    "lib/features/notifications/presentation/cubit/notifications_cubit.dart",
+    "lib/features/notifications/presentation/notifications_page.dart",
+    "lib/features/notifications/presentation/notifications_view.dart",
+    "lib/features/notifications/presentation/widgets/notification_item.dart",
+    "lib/features/vehicles/presentation/garage/widgets/vehicle_detail_view.dart",
+    "lib/design_system/molecules/feedback/document_slot_pill.dart",
+    "lib/features/authentication/application/auth_cubit.dart",
+    "lib/features/home/presentation/widgets/home_header.dart",
+    "lib/shared/router/app_routes.dart",
+    "lib/shared/router/app_router.dart",
+    "lib/core/http/api_routes.dart",
+    "lib/l10n/app_es.arb",
+    "pubspec.yaml",
+    "lib/main.dart"
+  ],
+  "testFiles": [
+    "test/features/soat/domain/models/soat_model_test.dart",
+    "test/features/soat/presentation/cubit/soat_cubit_test.dart",
+    "test/features/notifications/presentation/cubit/notifications_cubit_test.dart"
+  ],
+  "testCases": {
+    "TC-2-20": "SoatModel status=valid when expiry 31+ days",
+    "TC-2-21": "SoatModel status=expiringSoon when expiry exactly 30 days",
+    "TC-2-22": "SoatModel status=expiringSoon when expiry 1 day",
+    "TC-2-23": "SoatModel status=expiringSoon when expiry today",
+    "TC-2-24": "SoatModel status=expired when expiry yesterday",
+    "TC-2-25": "daysUntilExpiry day-aligned (no time component leakage)",
+    "TC-2-26": "SoatModel copyWith preserves unchanged fields",
+    "TC-2-27": "SoatCubit load() emits loading→data when SOAT exists",
+    "TC-2-28": "SoatCubit load() emits loading→empty when no SOAT",
+    "TC-2-29": "SoatCubit load() emits loading→error on failure",
+    "TC-2-30": "SoatCubit save() returns true and emits data on success",
+    "TC-2-31": "SoatCubit save() returns false and emits error on failure",
+    "TC-2-32": "NotificationsCubit initial state is correct",
+    "TC-2-33": "load() emits data with unreadCount=2 for 2 unread items",
+    "TC-2-34": "load() emits empty when no notifications",
+    "TC-2-35": "load() emits error on failure",
+    "TC-2-36": "load() stores nextCursor for pagination",
+    "TC-2-37": "loadMore() appends items to existing list",
+    "TC-2-38": "loadMore() is no-op when nextCursor is null",
+    "TC-2-39": "markRead() optimistically updates list and unreadCount",
+    "TC-2-40": "markAllRead() sets all notifications read and unreadCount=0"
+  },
+  "knownPreExistingFailures": [
+    "TC-2-28-legacy: rider_profile_page_test.dart — rider email display test (unrelated to iter-2 work, pre-existing)"
+  ],
+  "dependencies": [
+    "firebase_messaging: ^16.2.0",
+    "flutter_local_notifications: ^18.0.1"
+  ],
+  "nextAgent": "qa",
+  "phase": "frontend",
+  "updatedAt": "2026-05-14T22:58:43Z",
+  "summary": "SOAT flow (upload/manual/status), notifications rebuild with cursor pagination, FCM init. dart analyze 0 issues, flutter test 64 pass / 1 pre-existing fail.",
+  "metrics": {
+    "tokens": 79347,
+    "costUsd": 0.8
+  },
+  "artifacts": [
+    "lib/features/soat/domain/models/soat_model.dart",
+    "lib/features/soat/domain/repository/soat_repository.dart",
+    "lib/features/soat/domain/usecases/get_soat_usecase.dart",
+    "lib/features/soat/domain/usecases/save_soat_usecase.dart",
+    "lib/features/soat/data/dto/soat_dto.dart",
+    "lib/features/soat/data/service/soat_service.dart",
+    "lib/features/soat/data/repository/soat_repository_impl.dart",
+    "lib/features/soat/presentation/cubit/soat_cubit.dart",
+    "lib/features/soat/presentation/pages/soat_upload_page.dart",
+    "lib/features/soat/presentation/pages/soat_manual_form_page.dart",
+    "lib/features/soat/presentation/pages/soat_status_page.dart",
+    "lib/features/vehicles/presentation/garage/widgets/vehicle_soat_section.dart",
+    "lib/features/notifications/presentation/cubit/notifications_state.dart",
+    "lib/features/notifications/presentation/widgets/notification_bell_button.dart",
+    "lib/core/services/fcm_service.dart",
+    "lib/features/notifications/domain/model/notification_model.dart",
+    "lib/features/notifications/domain/repository/notifications_repository.dart",
+    "lib/features/notifications/data/dto/notification_dto.dart",
+    "lib/features/notifications/data/service/notifications_service.dart",
+    "lib/features/notifications/data/repository/notifications_repository_impl.dart",
+    "lib/features/notifications/presentation/cubit/notifications_cubit.dart",
+    "lib/features/notifications/presentation/notifications_page.dart",
+    "lib/features/notifications/presentation/notifications_view.dart",
+    "lib/features/notifications/presentation/widgets/notification_item.dart",
+    "lib/features/vehicles/presentation/garage/widgets/vehicle_detail_view.dart",
+    "lib/design_system/molecules/feedback/document_slot_pill.dart",
+    "lib/features/authentication/application/auth_cubit.dart",
+    "lib/features/home/presentation/widgets/home_header.dart",
+    "lib/shared/router/app_routes.dart",
+    "lib/shared/router/app_router.dart",
+    "lib/core/http/api_routes.dart",
+    "lib/l10n/app_es.arb",
+    "pubspec.yaml",
+    "lib/main.dart",
+    "test/features/soat/domain/models/soat_model_test.dart",
+    "test/features/soat/presentation/cubit/soat_cubit_test.dart",
+    "test/features/notifications/presentation/cubit/notifications_cubit_test.dart"
+  ]
+}

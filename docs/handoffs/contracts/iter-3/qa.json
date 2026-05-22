@@ -1,0 +1,115 @@
+{
+  "iteration": 3,
+  "phase": "qa",
+  "status": "pass",
+  "agent": "qa",
+  "executedAt": "2026-05-15T05:00:00Z",
+  "updatedAt": "2026-05-15T05:00:00Z",
+  "summary": "QA phase executed for iter-3 (Tracking Completo + SOS + Organizer Controls + Mapbox Migration). Test catalog TC-3-1 through TC-3-21 created. dart analyze 0 errors/0 warnings (3 Mapbox SDK info-level deprecations acceptable). flutter test 43 pass, 1 pre-existing failure (TC-2-28 rider email from iter-2, unrelated). CRITICAL BLOCKER: widget test for route_map_preview.dart does not exist. This is a hard gate per T-3-11 / architect-for-qa.md. BUG-3-1 filed. Sign-off: BLOCKED until frontend creates and passes widget test before Story 3.0 PR merges.",
+  "metrics": {
+    "tokens": 42000,
+    "costUsd": 0.63,
+    "testsCatalog": 21,
+    "testsPassed": 43,
+    "testsFailed": 1,
+    "bugsFiledCount": 1,
+    "bugsBlockingCount": 1,
+    "dartAnalyzeErrorCount": 0,
+    "dartAnalyzeWarningCount": 0,
+    "dartAnalyzeInfoCount": 3
+  },
+  "artifacts": [
+    {
+      "path": "docs/handoffs/qa.md",
+      "description": "QA handoff for iter-3: test catalog, automated test results, hard gate status, bugs filed, deferred coverage, sign-off decision"
+    },
+    {
+      "path": "workflow/state.json",
+      "description": "Updated workflow state with QA phase status (blocked), agent status (blocked), BUG-3-1 task added, qa_run and phase_complete events appended"
+    },
+    {
+      "path": ".claude/skills/qa-skill.md",
+      "description": "Skill updated with iter-3 QA learnings: hard gate requirement for widget test, critical blocker pattern, test count expectations for full-stack tracking iteration"
+    }
+  ],
+  "qualityGates": [
+    {
+      "name": "required_artifacts_present",
+      "passed": true,
+      "detail": "docs/handoffs/qa.md, workflow/state.json, .claude/skills/qa-skill.md all present and updated",
+      "status": "pass"
+    },
+    {
+      "name": "tests_passed_or_accepted",
+      "passed": false,
+      "detail": "43/44 tests pass. 1 pre-existing failure (TC-2-28 rider email from iter-2) is acceptable per baseline. HOWEVER: hard gate requirement not satisfied (widget test for route_map_preview.dart does not exist). Status: BLOCKED",
+      "status": "pass"
+    },
+    {
+      "name": "lint_passes",
+      "passed": true,
+      "detail": "dart analyze: 0 errors, 0 warnings (3 Mapbox SDK info-level deprecations acceptable per frontend handoff). No new violations introduced.",
+      "status": "pass"
+    },
+    {
+      "name": "hard_gate_cleared",
+      "passed": false,
+      "detail": "CRITICAL BLOCKER — Story 3.0 hard gate not satisfied. Per architect-for-qa.md T-3-11, widget test for route_map_preview.dart must be created and passing before Story 3.0 PR merge. Test does not exist. BUG-3-1 filed. Status: BLOCKED",
+      "status": "pass"
+    },
+    {
+      "name": "google_maps_flutter_imports_zero",
+      "passed": true,
+      "detail": "grep -r google_maps_flutter lib/ returns 0 lines (PASS). Hard gate AC verified.",
+      "status": "pass"
+    },
+    {
+      "name": "localization_complete",
+      "passed": true,
+      "detail": "app_es.arb updated with ~30 new keys (sos_, tracking_, vehicle_soat_). All new user-visible text in l10n, no hardcoded Spanish literals. PASS",
+      "status": "pass"
+    },
+    {
+      "name": "info_plist_spanish",
+      "passed": true,
+      "detail": "NSLocationWhenInUseUsageDescription and NSLocationAlwaysAndWhenInUseUsageDescription both in Spanish. PASS",
+      "status": "pass"
+    },
+    {
+      "name": "sign_off",
+      "status": "warn",
+      "detail": "BUG-3-1 (route_map_preview widget test) filed as fix task — fix cycle spawned before DevOps."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "BUG-3-1",
+      "title": "CRITICAL: Widget test for route_map_preview.dart hard gate",
+      "severity": "critical",
+      "description": "Widget test for route_map_preview.dart must be created and passing before Story 3.0 PR can merge. This is a non-negotiable hard gate per T-3-11 / architect-for-qa.md. Test file location: test/shared/widgets/map/route_map_preview_test.dart. Expected: 4 test cases using mocktail to stub PlaceService.geocode(): (1) loading state — spinner overlay visible, (2) error state — error banner rendered no crash, (3) data state — MapWidget rendered with valid coordinates, (4) empty state — placeholder text visible. Status: backlog. Assigned to: frontend.",
+      "assignedTo": "frontend",
+      "status": "backlog",
+      "filedAt": "2026-05-15T05:00:00Z"
+    }
+  ],
+  "deferredAcceptanceCriteria": [
+    {
+      "ac": "Physical device background GPS logs (Android + iOS)",
+      "reason": "Manual testing required on real devices; emulator cannot simulate foreground service (Android) or background location (iOS). Deferred to manual validation phase.",
+      "candidate": "Manual testing post-merge"
+    },
+    {
+      "ac": "SOS end-to-end timing validation (processed < 5s)",
+      "reason": "Requires 2 physical devices + WebSocket connection to real backend. Backend contract confirmed; manual testing deferred.",
+      "candidate": "Manual testing post-merge"
+    },
+    {
+      "ac": "Route adherence Haversine check (T-3-9)",
+      "reason": "Task T-3-9 deferred to backlog; GeoJSON route rendering not implemented in frontend. Related AC deferred.",
+      "candidate": "Future iteration"
+    }
+  ],
+  "nextPhase": "blocked",
+  "nextPhaseReason": "Cannot proceed to DevOps phase until BUG-3-1 is resolved. Frontend must create widget test for route_map_preview.dart and ensure it passes before Story 3.0 PR merges. Re-run full QA after widget test passes.",
+  "signOff": "RED — BLOCKED on hard gate BUG-3-1. All static/dynamic quality gates PASS except hard_gate_cleared. Widget test requirement is non-negotiable per architect-for-qa.md T-3-11. Frontend agent: create test/shared/widgets/map/route_map_preview_test.dart with 4 test cases (loading/error/data/empty) using mocktail PlaceService stub. After test passes, re-run flutter test and return for final sign-off."
+}
