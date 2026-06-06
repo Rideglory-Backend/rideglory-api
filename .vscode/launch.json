@@ -16,6 +16,16 @@
       "cwd": "${workspaceFolder}/api-gateway"
     },
     {
+      "name": "Debug API Gateway (dev)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run start -- --debug 9231 --watch",
+      "cwd": "${workspaceFolder}/api-gateway",
+      "env": {
+        "DOTENV_CONFIG_PATH": ".env.dev"
+      }
+    },
+    {
       "name": "Debug Events MS",
       "type": "node-terminal",
       "request": "launch",
@@ -50,6 +60,17 @@
       "configurations": [
         "Debug Vehicles MS",
         "Debug API Gateway",
+        "Debug Events MS",
+        "Debug Users MS",
+        "Debug Maintenances MS",
+        "Debug Notifications MS"
+      ]
+    },
+    {
+      "name": "Debug All Services (dev)",
+      "configurations": [
+        "Debug Vehicles MS",
+        "Debug API Gateway (dev)",
         "Debug Events MS",
         "Debug Users MS",
         "Debug Maintenances MS",
