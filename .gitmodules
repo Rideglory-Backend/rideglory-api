@@ -25,3 +25,6 @@
 [submodule "rideglory-contracts"]
 	path = rideglory-contracts
 	url = https://github.com/Rideglory-Backend/contracts.git
+[submodule "notifications-ms"]
+	path = notifications-ms
+	url = https://github.com/Rideglory-Backend/notifications-ms.git
